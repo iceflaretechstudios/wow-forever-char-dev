@@ -1,34 +1,34 @@
 {
   "character": {
     "name": "Iceflare Theundying",
-    "level": 14,
+    "level": 15,
     "characterClass": "Paladin",
     "faction": "Horde",
     "guild": "Dominion Forever",
     "averageItemLevel": 8
   },
   "stats": {
-    "health": 312,
-    "mana": 390,
-    "strength": 44,
-    "attackPower": 110,
-    "armor": 646
+    "health": 331,
+    "mana": 422,
+    "strength": 49,
+    "attackPower": 123,
+    "armor": 648
   },
   "weapon": [
     {
-      "name": "Fishing Pole",
-      "dps": 0.99999994
+      "name": "Twin-bladed Axe of Strength",
+      "dps": 10.740741
     }
   ],
   "professions": [
     {
       "name": "Skinning",
-      "skill": 112,
+      "skill": 114,
       "max": 150
     },
     {
       "name": "Herbalism",
-      "skill": 49,
+      "skill": 60,
       "max": 75
     },
     {
@@ -47,6 +47,6 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-09T00:52:07.247Z",
-  "snapshotFetchedAt": "2026-11-09T00:52:07.261727+00:00"
+  "updated": "2026-11-09T01:58:49.905Z",
+  "snapshotFetchedAt": "2026-11-09T01:58:49.914023+00:00"
 }
