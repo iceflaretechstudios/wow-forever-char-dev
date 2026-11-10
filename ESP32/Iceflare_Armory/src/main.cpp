@@ -57,7 +57,21 @@ void refresh(){
 
 bool jpgOutput(int16_t x,int16_t y,uint16_t w,uint16_t h,uint16_t *bitmap){if(y>=438)return false;tft.pushImage(x,y,w,h,bitmap);return true;}
 void header(){tft.fillRect(0,0,320,45,BG);textAt("ICEFLARE ARMORY",10,8,GOLD,4);tft.fillCircle(303,15,4,WiFi.status()==WL_CONNECTED?GREEN:0xF800);tft.drawFastHLine(0,42,320,BORDER);}
-void footer(){tft.fillRect(0,441,320,39,BG);tft.drawFastHLine(0,440,320,BORDER);button(5,446,75,"Armory",page==0);button(85,446,75,"Stats",page==1);button(165,446,75,"Talents",page==2);button(245,446,70,"Prof",page==3);}
+void footer(){
+ tft.fillRect(0,441,320,39,BG);
+ tft.drawFastHLine(0,440,320,BORDER);
+ // Compact navigation: 25 px tall, centered vertically in the 39 px footer.
+ const int y=448, h=25;
+ const char* labels[]={"Armory","Stats","Talents","Prof"};
+ for(int i=0;i<4;i++){
+  int x=5+i*80, w=(i==3?70:75);
+  uint16_t fill=(page==i?BLUE:PANEL);
+  tft.fillRoundRect(x,y,w,h,6,fill);
+  tft.drawRoundRect(x,y,w,h,6,BORDER);
+  tft.setTextColor(page==i?WHITE:GOLD,fill);
+  tft.drawCentreString(labels[i],x+w/2,y+4,2);
+ }
+}
 void lineItem(String left,String right,int y,uint16_t color=WHITE){if(y<56||y>426)return; textAt(clip(left,23),12,y,MUTED,2);tft.setTextColor(color,BG);tft.drawRightString(clip(right,17),307,y,2);}
 JsonObjectConst itemFor(String slot){for(JsonObjectConst item:profile["equipment"].as<JsonArrayConst>()){if(getText(item["slot"]["type"])==slot)return item;}return JsonObjectConst();}
 void equipmentRow(int x,int y,String slot){if(y<305||y+33>438)return;JsonObjectConst item=itemFor(slot);panel(x,y,148,33);String name=getText(item["name"],"Empty");uint16_t q=WHITE;String quality=getText(item["quality"]["type"]);if(quality=="EPIC")q=0xB1FB;else if(quality=="RARE")q=0x4C9F;else if(quality=="UNCOMMON")q=GREEN; textAt(clip(titleCase(slot),12),x+5,y+2,MUTED,1);textAt(clip(name,21),x+5,y+15,q,1);}
