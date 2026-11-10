@@ -115,7 +115,7 @@ void armory(){
  JsonObjectConst c=profile["character"].as<JsonObjectConst>();
  panel(6,50,308,50);textAt(clip(characterName,18),13,55,GOLD,4);
  String meta="Lvl "+getText(c["level"])+"  iLvl "+getText(c["averageItemLevel"])+"  "+getText(c["characterClass"]);
- textAt(clip(meta,39),13,83,MUTED,1);
+ textAt(clip(meta,26),13,83,MUTED,1);
  String gold=moneyDisplay();tft.setTextColor(GOLD,PANEL);tft.drawRightString("Gold: "+gold,305,83,1);
  panel(6,105,308,173);
  if(hasPortrait){TJpgDec.drawFsJpg(47,108,"/portrait.jpg",LittleFS);}else{
