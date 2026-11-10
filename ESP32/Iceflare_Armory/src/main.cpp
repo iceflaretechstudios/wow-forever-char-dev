@@ -153,12 +153,12 @@ void setup(){Serial.begin(115200);delay(300);
 void loop(){
  if(WiFi.status()==WL_CONNECTED&&millis()-lastAttempt>REFRESH_INTERVAL_MS){refresh();draw();}
  if(touch.touched()){
-  TS_Point p=touch.getPoint();int rawX=p.x,rawY=p.y;
-  if(TOUCH_SWAP_XY){int a=rawX;rawX=rawY;rawY=a;}
-  int x=map(constrain(rawX,TOUCH_MIN_X,TOUCH_MAX_X),TOUCH_MIN_X,TOUCH_MAX_X,0,319);
-  int y=map(constrain(rawY,TOUCH_MIN_Y,TOUCH_MAX_Y),TOUCH_MIN_Y,TOUCH_MAX_Y,0,479);
-  if(TOUCH_INVERT_X) x=319-x;
-  if(TOUCH_INVERT_Y) y=479-y;
+  TS_Point p=touch.getPoint();
+  // Nine-point affine transform includes both axis reversals and measured skew.
+  float screenX=TOUCH_AFFINE_AX0+TOUCH_AFFINE_AX1*p.x+TOUCH_AFFINE_AX2*p.y;
+  float screenY=TOUCH_AFFINE_AY0+TOUCH_AFFINE_AY1*p.x+TOUCH_AFFINE_AY2*p.y;
+  int x=constrain((int)lroundf(screenX),0,319);
+  int y=constrain((int)lroundf(screenY),0,479);
   if(y>440){page=constrain(x/80,0,3);scrollY=0;draw();}
   else if(y>48){scrollY+=111;if(scrollY>contentHeight)scrollY=0;draw();}
   delay(230);
