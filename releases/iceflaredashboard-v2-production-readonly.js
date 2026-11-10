@@ -109,6 +109,31 @@ export default {
       if(session){try{const index=await retailIndex(session.access_token);retail=index.characters;retailStatus=index.status===200?"connected":"unavailable (HTTP "+index.status+")"}catch{retailStatus="unavailable"}}
       return apiJson({forever:configuredForever(),retail,retailStatus,retailConnected:!!session});
     }
+    // Retail gold uploads require a dedicated Worker secret; never expose it to the browser.
+    if(path==="/api/retail-gold/upload"){
+      if(request.method!=="POST")return apiJson({error:"Method not allowed"},405);
+      if(!env.GOLD_DB)return apiJson({error:"Gold database not configured"},503);
+      if(!env.RETAIL_GOLD_SYNC_TOKEN)return apiJson({error:"Retail gold upload token not configured"},503);
+      const provided=request.headers.get("Authorization")||"";
+      if(provided!=="Bearer "+env.RETAIL_GOLD_SYNC_TOKEN)return apiJson({error:"Unauthorized"},401);
+      let payload;try{payload=await request.json()}catch{return apiJson({error:"Invalid JSON"},400)}
+      const entries=Array.isArray(payload?.characters)?payload.characters:null;
+      if(!entries||entries.length<1||entries.length>100)return apiJson({error:"Provide 1-100 characters"},400);
+      const clean=[];
+      for(const entry of entries){
+        const realm=entry?.realm, name=entry?.name, copper=entry?.copper;
+        if(typeof realm!=="string"||typeof name!=="string"||!realm.trim()||!name.trim()||realm.length>100||name.length>80||!Number.isSafeInteger(copper)||copper<0)
+          return apiJson({error:"Invalid realm, name or copper"},400);
+        clean.push({realm:realm.trim(),name:name.trim(),copper});
+      }
+      try{
+        const statements=clean.map(c=>env.GOLD_DB.prepare(
+          "INSERT INTO retail_character_money (realm, character_name, copper, updated_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP) ON CONFLICT(realm, character_name) DO UPDATE SET copper=excluded.copper, updated_at=CURRENT_TIMESTAMP"
+        ).bind(c.realm,c.name,c.copper));
+        await env.GOLD_DB.batch(statements);
+        return apiJson({ok:true,uploaded:clean.length});
+      }catch(error){console.error("Retail gold upload failed:",error);return apiJson({error:"Retail gold upload failed"},500)}
+    }
     const armoryMatch=path.match(/^\/api\/armory\/(forever|retail)\/([a-z0-9-]{2,80})(?:\/([a-z0-9-]{2,80}))?$/);
     if(armoryMatch){
       try{
@@ -139,6 +164,17 @@ export default {
         let syncedMoney = null;
         let goldLastSynced = null;
 
+if (source === "retail" && env.GOLD_DB) {
+  try {
+    const saved = await env.GOLD_DB.prepare(
+      "SELECT copper, updated_at FROM retail_character_money WHERE lower(realm) = ? AND lower(character_name) = ? LIMIT 1"
+    ).bind(a, b).first();
+    if (saved && Number.isSafeInteger(saved.copper) && saved.copper >= 0) {
+      syncedMoney = saved.copper;
+      goldLastSynced = saved.updated_at || null;
+    }
+  } catch (error) { console.error("Retail gold lookup failed:", error); }
+}
 if (source === "forever" && a === "iceflare-theundying" && env.GOLD_DB) {
   try {
     const saved = await env.GOLD_DB.prepare(`
@@ -355,7 +391,7 @@ function renderProfessions(p,status){
  set("professions",...blocks);
 }
 async function openProfile(source,c){selected={source,c};$("landing").classList.add("hidden");$("profile").classList.remove("hidden");window.scrollTo(0,0);await refresh()}
-async function refresh(){if(!selected)return;const {source,c}=selected;const path=source==="forever"?"/api/armory/forever/"+encodeURIComponent(c.slug):"/api/armory/retail/"+encodeURIComponent(c.realm)+"/"+encodeURIComponent(c.name.toLowerCase());$("refresh").disabled=true;$("status").textContent="Loading character information from Blizzard…";try{const r=await fetch(path,{cache:"no-store"}),d=await r.json();if(!r.ok)throw Error(d.error||"Character unavailable");const ch=d.character,s=d.stats||{};$("character-name").textContent=ch.name;const meta=$("character-meta");meta.replaceChildren();$("equipment-level").textContent=ch.level!=null?"Lvl "+ch.level:"";$("equipment-ilvl").textContent=ch.averageItemLevel!=null?"iLvl "+ch.averageItemLevel:"";$("equipment-guild").textContent=ch.guild?"Guild: "+ch.guild:"";const fields=[source==="forever"?"WoW Forever":"WoW Retail US",ch.characterClass,ch.faction,ch.realm,ch.activeSpec].filter(Boolean);fields.forEach((field,i)=>{if(i)meta.append(document.createTextNode(" · "));meta.append(document.createTextNode(field));if(field===ch.faction&&source==="forever"){const money=document.createElement("span");money.className="character-money";const raw=ch.moneyCopper;const amount=typeof raw==="number"&&Number.isSafeInteger(raw)&&raw>=0?raw:null;if(amount===null){money.textContent="Money: Not reported";money.title="The character API does not currently provide a verified coin balance";}else{const gold=Math.floor(amount/10000),silver=Math.floor(amount%10000/100),copper=amount%100;for(const [value,unit,klass] of [[gold,"g","coin-gold"],[silver,"s","coin-silver"],[copper,"c","coin-copper"]]){const span=document.createElement("span");span.className=klass;span.textContent=value.toLocaleString()+unit;money.append(span)}if(ch.goldLastSynced){const stamp=document.createElement("span");stamp.style.cssText="flex-basis:100%;font-size:12px;font-weight:400;color:#cbd3df";const utc=ch.goldLastSynced.replace(" ","T")+(ch.goldLastSynced.endsWith("Z")?"":"Z");const parsed=new Date(utc);stamp.textContent="Last synced: "+(Number.isNaN(parsed.getTime())?ch.goldLastSynced:parsed.toLocaleString());money.append(stamp)}}meta.append(document.createTextNode(" · "));meta.append(money)}});const hp=s.health??null,power=s.power??null;renderDoll(d.equipment||[],d.itemIcons||{},ch);renderGear(d.equipment||[],ch);renderStats(s,d.endpointStatus.statistics);renderTalents(d.specializations,d.endpointStatus.specializations);renderProfessions(d.professions,d.endpointStatus.professions);$("status").textContent="Last checked: "+new Date(d.updated).toLocaleString()+""}catch(e){$("status").textContent="Error: "+e.message;$("status").className="error"}finally{$("refresh").disabled=false}}
+async function refresh(){if(!selected)return;const {source,c}=selected;const path=source==="forever"?"/api/armory/forever/"+encodeURIComponent(c.slug):"/api/armory/retail/"+encodeURIComponent(c.realm)+"/"+encodeURIComponent(c.name.toLowerCase());$("refresh").disabled=true;$("status").textContent="Loading character information from Blizzard…";try{const r=await fetch(path,{cache:"no-store"}),d=await r.json();if(!r.ok)throw Error(d.error||"Character unavailable");const ch=d.character,s=d.stats||{};$("character-name").textContent=ch.name;const meta=$("character-meta");meta.replaceChildren();$("equipment-level").textContent=ch.level!=null?"Lvl "+ch.level:"";$("equipment-ilvl").textContent=ch.averageItemLevel!=null?"iLvl "+ch.averageItemLevel:"";$("equipment-guild").textContent=ch.guild?"Guild: "+ch.guild:"";const fields=[source==="forever"?"WoW Forever":"WoW Retail US",ch.characterClass,ch.faction,ch.realm,ch.activeSpec].filter(Boolean);fields.forEach((field,i)=>{if(i)meta.append(document.createTextNode(" · "));meta.append(document.createTextNode(field));if(field===ch.faction){const money=document.createElement("span");money.className="character-money";const raw=ch.moneyCopper;const amount=typeof raw==="number"&&Number.isSafeInteger(raw)&&raw>=0?raw:null;if(amount===null){money.textContent="Money: Not reported";money.title="The character API does not currently provide a verified coin balance";}else{const gold=Math.floor(amount/10000),silver=Math.floor(amount%10000/100),copper=amount%100;for(const [value,unit,klass] of [[gold,"g","coin-gold"],[silver,"s","coin-silver"],[copper,"c","coin-copper"]]){const span=document.createElement("span");span.className=klass;span.textContent=value.toLocaleString()+unit;money.append(span)}if(ch.goldLastSynced){const stamp=document.createElement("span");stamp.style.cssText="flex-basis:100%;font-size:12px;font-weight:400;color:#cbd3df";const utc=ch.goldLastSynced.replace(" ","T")+(ch.goldLastSynced.endsWith("Z")?"":"Z");const parsed=new Date(utc);stamp.textContent="Last synced: "+(Number.isNaN(parsed.getTime())?ch.goldLastSynced:parsed.toLocaleString());money.append(stamp)}}meta.append(document.createTextNode(" · "));meta.append(money)}});const hp=s.health??null,power=s.power??null;renderDoll(d.equipment||[],d.itemIcons||{},ch);renderGear(d.equipment||[],ch);renderStats(s,d.endpointStatus.statistics);renderTalents(d.specializations,d.endpointStatus.specializations);renderProfessions(d.professions,d.endpointStatus.professions);$("status").textContent="Last checked: "+new Date(d.updated).toLocaleString()+""}catch(e){$("status").textContent="Error: "+e.message;$("status").className="error"}finally{$("refresh").disabled=false}}
 $("back").addEventListener("click",()=>{selected=null;$("profile").classList.add("hidden");$("landing").classList.remove("hidden");window.scrollTo(0,0);loadCharacters()});$("refresh").addEventListener("click",refresh);loadCharacters();if("serviceWorker" in navigator)navigator.serviceWorker.register("/service-worker.js").catch(()=>{});
 </script></body></html>`;
     return new Response(html,{headers:{
