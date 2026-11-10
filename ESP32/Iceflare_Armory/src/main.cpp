@@ -10,7 +10,7 @@
 #include "config.h"
 
 TFT_eSPI tft;
-XPT2046_Touchscreen touch(TOUCH_CS);
+XPT2046_Touchscreen touch(TOUCH_CS, TOUCH_IRQ);
 constexpr uint16_t BG=0x0863, PANEL=0x10C5, BORDER=0x6B4D, GOLD=0xF62D, WHITE=0xEF7D, MUTED=0xAD55, BLUE=0x2188, GREEN=0x4E69;
 const char *slotKeys[]={"HEAD","NECK","SHOULDER","BACK","CHEST","SHIRT","TABARD","WRIST","HANDS","WAIST","LEGS","FEET","FINGER_1","FINGER_2","TRINKET_1","TRINKET_2","MAIN_HAND","OFF_HAND","RANGED"};
 const char *statKeys[]={"health","power","strength","agility","stamina","intellect","spirit","armor","attack_power","spell_power","melee_crit","spell_crit","mastery","haste","versatility"};
@@ -107,10 +107,14 @@ void professions(){int y=58-scrollY;textAt("PROFESSIONS",10,y,GOLD,2);y+=35;
  contentHeight=max(0,y+scrollY-420);
 }
 void draw(){tft.fillScreen(BG);header();if(profile["character"].isNull()){textAt("Connecting to Cloudflare...",16,110,GOLD,2);textAt(clip(errorText,35),16,140,MUTED,2);}else {if(page==0)armory();else if(page==1)stats();else if(page==2)talents();else professions();}footer();}
-void setup(){Serial.begin(115200);delay(300);tft.init();tft.setRotation(0);tft.fillScreen(BG);tft.setTextDatum(TL_DATUM);tft.setTextWrap(false);
+void setup(){Serial.begin(115200);delay(300);
+ pinMode(27, OUTPUT); digitalWrite(27, HIGH); // E32R40T backlight
+ pinMode(TOUCH_CS, OUTPUT); digitalWrite(TOUCH_CS, HIGH);
+ SPI.begin(14, 12, 13); // Shared LCD / XPT2046 SPI bus
+ tft.init();tft.setRotation(0);tft.fillScreen(BG);tft.setTextDatum(TL_DATUM);tft.setTextWrap(false);
  if(!LittleFS.begin(true))Serial.println("LittleFS mount failed");
  TJpgDec.setJpgScale(1);TJpgDec.setSwapBytes(true);TJpgDec.setCallback(jpgOutput);hasPortrait=LittleFS.exists("/portrait.jpg");
- touch.begin();touch.setRotation(0);
+ touch.begin(SPI);touch.setRotation(0);
  WiFi.mode(WIFI_STA);WiFi.begin(WIFI_SSID,WIFI_PASSWORD);unsigned long start=millis();while(WiFi.status()!=WL_CONNECTED&&millis()-start<15000){delay(250);}
  connected=WiFi.status()==WL_CONNECTED;if(connected)refresh();else status("Check Wi-Fi settings");draw();}
 void loop(){
@@ -120,7 +124,8 @@ void loop(){
   if(TOUCH_SWAP_XY){int a=rawX;rawX=rawY;rawY=a;}
   int x=map(constrain(rawX,TOUCH_MIN_X,TOUCH_MAX_X),TOUCH_MIN_X,TOUCH_MAX_X,0,319);
   int y=map(constrain(rawY,TOUCH_MIN_Y,TOUCH_MAX_Y),TOUCH_MIN_Y,TOUCH_MAX_Y,0,479);
-  if(TOUCH_INVERT_X)x=319-x;if(TOUCH_INVERT_Y)y=479-y;
+  if(TOUCH_INVERT_X) x=319-x;
+  if(TOUCH_INVERT_Y) y=479-y;
   if(y>440){page=constrain(x/80,0,3);scrollY=0;draw();}
   else if(y>48){scrollY+=120;if(scrollY>contentHeight)scrollY=0;draw();}
   delay(230);
