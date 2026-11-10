@@ -28,6 +28,29 @@ String titleCase(String s){s.replace("_"," ");bool cap=true;for(unsigned i=0;i<s
 String clip(String s,int max){return s.length()>(unsigned)max?s.substring(0,max-2)+"..":s;}
 void status(String s){errorText=s;Serial.println(s);}
 
+String moneyDisplay(){
+ JsonVariantConst ch=profile["character"];
+ JsonVariantConst amount=ch["moneyCopper"];
+ if(amount.isNull())amount=ch["money_copper"];
+ if(amount.isNull())amount=ch["money"]["copper"];
+ if(amount.isNull())amount=profile["moneyCopper"];
+ if(amount.isNull())amount=profile["money_copper"];
+ if(amount.isNull())amount=profile["money"]["copper"];
+ if(amount.isNull())return "N/A";
+ String raw=getText(amount,"");
+ if(raw.isEmpty()||raw=="-")return "N/A";
+ for(unsigned i=0;i<raw.length();i++){
+  if(raw[i]<'0'||raw[i]>'9')return "N/A";
+ }
+ unsigned long long copper=strtoull(raw.c_str(),nullptr,10);
+ unsigned long long gold=copper/10000ULL;
+ if(gold==0)return "0g";
+ String digits=String((unsigned long)(gold%1000000000ULL));
+ if(gold>=1000000000ULL)return String((unsigned long)(gold/1000000000ULL))+"B+"+"g";
+ return digits+"g";
+}
+
+
 bool fetchJson(const String &path,JsonDocument &out){
  if(WiFi.status()!=WL_CONNECTED){status("Wi-Fi disconnected");return false;}
  WiFiClientSecure client;client.setInsecure(); // Prototype only: replace with a CA certificate before production use.
@@ -93,6 +116,7 @@ void armory(){
  panel(6,50,308,50);textAt(clip(characterName,18),13,55,GOLD,4);
  String meta="Lvl "+getText(c["level"])+"  iLvl "+getText(c["averageItemLevel"])+"  "+getText(c["characterClass"]);
  textAt(clip(meta,39),13,83,MUTED,1);
+ String gold=moneyDisplay();tft.setTextColor(GOLD,PANEL);tft.drawRightString("Gold: "+gold,305,83,1);
  panel(6,105,308,173);
  if(hasPortrait){TJpgDec.drawFsJpg(47,108,"/portrait.jpg",LittleFS);}else{
   textAt("CHARACTER PORTRAIT",82,173,GOLD,2);textAt("Add data/portrait.jpg",95,198,MUTED,1);
@@ -124,7 +148,7 @@ void stats(){int y=55-scrollY;
  y=103-scrollY;
  for(const char* k:statKeys){JsonVariantConst v=profile["stats"][k];if(!v.isNull()){String value;if(v.is<JsonObjectConst>())value=getText(v["effective"],getText(v["value"],getText(v["base"])));else value=getText(v);lineItem(titleCase(k),value,y);y+=29;}}
  JsonObjectConst ch=profile["character"].as<JsonObjectConst>();
- if(ch["moneyCopper"].is<long long>()){long long copper=ch["moneyCopper"].as<long long>();lineItem("Gold",String((long)(copper/10000)),y,GOLD);y+=29;}
+ lineItem("Gold",moneyDisplay(),y,GOLD);y+=29;
  contentHeight=max(0,y+scrollY-420);
 }
 void talents(){int y=59-scrollY;textAt("TALENTS & SPECIALIZATIONS",10,y,GOLD,2);y+=31;
