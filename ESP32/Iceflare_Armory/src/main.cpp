@@ -33,9 +33,22 @@ bool fetchJson(const String &path,JsonDocument &out){
  WiFiClientSecure client;client.setInsecure(); // Prototype only: replace with a CA certificate before production use.
  HTTPClient http;http.setTimeout(15000);if(!http.begin(client,String(WORKER_BASE)+path)){status("HTTPS begin failed");return false;}
  http.addHeader("Accept","application/json");http.addHeader("Cache-Control","no-cache");
- int code=http.GET();if(code!=200){status("HTTP "+String(code));http.end();return false;}
- DeserializationError err=deserializeJson(out,http.getStream());http.end();
- if(err){status(String("JSON: ")+err.c_str());return false;}return true;
+ int code=http.GET();
+ Serial.printf("API GET %s -> HTTP %d, declared length=%d, free heap=%u\\n",
+               path.c_str(),code,http.getSize(),ESP.getFreeHeap());
+ if(code!=200){status("HTTP "+String(code));http.end();return false;}
+ // HTTPClient::getString handles chunked transfer encoding; getStream()
+ // exposes the raw transport and may give ArduinoJson chunk framing.
+ String payload=http.getString();
+ http.end();
+ Serial.printf("API received %u bytes, free heap=%u\\n",
+               (unsigned)payload.length(),ESP.getFreeHeap());
+ if(payload.isEmpty()){status("API response empty");return false;}
+ DeserializationError err=deserializeJson(out,payload);
+ if(err){Serial.printf("JSON parse failed: %s; bytes=%u\\n",
+                       err.c_str(),(unsigned)payload.length());
+         status(String("JSON: ")+err.c_str());return false;}
+ return true;
 }
 
 bool chooseCharacter(){
