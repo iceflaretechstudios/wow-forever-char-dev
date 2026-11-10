@@ -140,16 +140,24 @@ void professions(){int y=58-scrollY;textAt("PROFESSIONS",10,y,GOLD,2);y+=35;
  contentHeight=max(0,y+scrollY-420);
 }
 void draw(){tft.fillScreen(BG);header();if(profile["character"].isNull()){textAt("Connecting to Cloudflare...",16,110,GOLD,2);textAt(clip(errorText,35),16,140,MUTED,2);}else {if(page==0)armory();else if(page==1)stats();else if(page==2)talents();else professions();}footer();}
-void setup(){Serial.begin(115200);delay(300);
- pinMode(27, OUTPUT); digitalWrite(27, HIGH); // E32R40T backlight
- pinMode(TOUCH_CS, OUTPUT); digitalWrite(TOUCH_CS, HIGH);
- SPI.begin(14, 12, 13); // Shared LCD / XPT2046 SPI bus
+void setup(){
+ Serial.begin(115200);delay(300);
+ Serial.println("ICEFLARE ARMORY: SETUP STARTED");
+ pinMode(27,OUTPUT);digitalWrite(27,HIGH); // E32R40T backlight
+ Serial.println("BACKLIGHT GPIO27 SET HIGH");
+ pinMode(TOUCH_CS,OUTPUT);digitalWrite(TOUCH_CS,HIGH);
+ SPI.begin(14,12,13); // Shared LCD / XPT2046 SPI bus
+ Serial.println("SPI INITIALIZED");
  tft.init();tft.setRotation(0);tft.fillScreen(BG);tft.setTextDatum(TL_DATUM);tft.setTextWrap(false);
+ Serial.println("LCD INITIALIZED");
  if(!LittleFS.begin(true))Serial.println("LittleFS mount failed");
  TJpgDec.setJpgScale(1);TJpgDec.setSwapBytes(true);TJpgDec.setCallback(jpgOutput);hasPortrait=LittleFS.exists("/portrait.jpg");
  touch.begin(SPI);touch.setRotation(0);
+ Serial.println("TOUCH INITIALIZED");
  WiFi.mode(WIFI_STA);WiFi.begin(WIFI_SSID,WIFI_PASSWORD);unsigned long start=millis();while(WiFi.status()!=WL_CONNECTED&&millis()-start<15000){delay(250);}
- connected=WiFi.status()==WL_CONNECTED;if(connected)refresh();else status("Check Wi-Fi settings");draw();}
+ connected=WiFi.status()==WL_CONNECTED;if(connected)refresh();else status("Check Wi-Fi settings");draw();
+ Serial.println("ICEFLARE ARMORY: READY");
+}
 void loop(){
  if(WiFi.status()==WL_CONNECTED&&millis()-lastAttempt>REFRESH_INTERVAL_MS){refresh();draw();}
  if(touch.touched()){
