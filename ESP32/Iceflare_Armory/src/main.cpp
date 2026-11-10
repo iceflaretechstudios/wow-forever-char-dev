@@ -44,10 +44,11 @@ String moneyDisplay(){
  }
  unsigned long long copper=strtoull(raw.c_str(),nullptr,10);
  unsigned long long gold=copper/10000ULL;
- if(gold==0)return "0g";
- String digits=String((unsigned long)(gold%1000000000ULL));
- if(gold>=1000000000ULL)return String((unsigned long)(gold/1000000000ULL))+"B+"+"g";
- return digits+"g";
+ unsigned int silver=(unsigned int)((copper/100ULL)%100ULL);
+ unsigned int coins=(unsigned int)(copper%100ULL);
+ char result[48];
+ snprintf(result,sizeof(result),"%llug %02us %02uc",gold,silver,coins);
+ return String(result);
 }
 
 
