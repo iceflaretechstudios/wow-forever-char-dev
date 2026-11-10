@@ -60,7 +60,7 @@ void header(){tft.fillRect(0,0,320,45,BG);textAt("ICEFLARE ARMORY",10,8,GOLD,4);
 void footer(){tft.fillRect(0,441,320,39,BG);tft.drawFastHLine(0,440,320,BORDER);button(5,446,75,"Armory",page==0);button(85,446,75,"Stats",page==1);button(165,446,75,"Talents",page==2);button(245,446,70,"Prof",page==3);}
 void lineItem(String left,String right,int y,uint16_t color=WHITE){if(y<56||y>426)return; textAt(clip(left,23),12,y,MUTED,2);tft.setTextColor(color,BG);tft.drawRightString(clip(right,17),307,y,2);}
 JsonObjectConst itemFor(String slot){for(JsonObjectConst item:profile["equipment"].as<JsonArrayConst>()){if(getText(item["slot"]["type"])==slot)return item;}return JsonObjectConst();}
-void equipmentRow(int x,int y,String slot){if(y<60||y>425)return;JsonObjectConst item=itemFor(slot);panel(x,y,148,33);String name=getText(item["name"],"Empty");uint16_t q=WHITE;String quality=getText(item["quality"]["type"]);if(quality=="EPIC")q=0xB1FB;else if(quality=="RARE")q=0x4C9F;else if(quality=="UNCOMMON")q=GREEN; textAt(clip(titleCase(slot),12),x+5,y+2,MUTED,1);textAt(clip(name,21),x+5,y+15,q,1);}
+void equipmentRow(int x,int y,String slot){if(y<305||y+33>438)return;JsonObjectConst item=itemFor(slot);panel(x,y,148,33);String name=getText(item["name"],"Empty");uint16_t q=WHITE;String quality=getText(item["quality"]["type"]);if(quality=="EPIC")q=0xB1FB;else if(quality=="RARE")q=0x4C9F;else if(quality=="UNCOMMON")q=GREEN; textAt(clip(titleCase(slot),12),x+5,y+2,MUTED,1);textAt(clip(name,21),x+5,y+15,q,1);}
 void armory(){
  JsonObjectConst c=profile["character"].as<JsonObjectConst>();
  panel(6,50,308,50);textAt(clip(characterName,18),13,55,GOLD,4);
@@ -71,7 +71,26 @@ void armory(){
   textAt("CHARACTER PORTRAIT",82,173,GOLD,2);textAt("Add data/portrait.jpg",95,198,MUTED,1);
  }
  textAt("EQUIPMENT",9,284,GOLD,2);
- for(int i=0;i<8;i++){equipmentRow(6,305+i*37,slotKeys[i]);equipmentRow(166,305+i*37,slotKeys[i+9]);}
+ // The portrait and navigation stay fixed; only equipment rows scroll.
+ // 19 slots arranged in two columns (10 rows), clipped above the footer.
+ constexpr int listTop=305, listBottom=438, rowPitch=37, slotCount=19;
+ constexpr int rowCount=(slotCount+1)/2;
+ contentHeight=max(0, rowCount*rowPitch-(listBottom-listTop));
+ scrollY=constrain(scrollY,0,contentHeight);
+ for(int i=0;i<rowCount;i++){
+  int y=listTop+i*rowPitch-scrollY;
+  equipmentRow(6,y,slotKeys[i]);
+  int right=i+rowCount;
+  if(right<slotCount)equipmentRow(166,y,slotKeys[right]);
+ }
+ // Visible scroll position and guidance at the right edge.
+ if(contentHeight>0){
+  int track= listBottom-listTop;
+  int thumb=max(16,track*(listBottom-listTop)/(rowCount*rowPitch));
+  int pos=(scrollY*(track-thumb))/contentHeight;
+  tft.fillRect(316,listTop,3,track,BORDER);
+  tft.fillRect(316,listTop+pos,3,thumb,GOLD);
+ }
 }
 void stats(){int y=55-scrollY;
  panel(6,55,308,36);textAt("CHARACTER STATISTICS",15,64,GOLD,2);
@@ -127,7 +146,7 @@ void loop(){
   if(TOUCH_INVERT_X) x=319-x;
   if(TOUCH_INVERT_Y) y=479-y;
   if(y>440){page=constrain(x/80,0,3);scrollY=0;draw();}
-  else if(y>48){scrollY+=120;if(scrollY>contentHeight)scrollY=0;draw();}
+  else if(y>48){scrollY+=111;if(scrollY>contentHeight)scrollY=0;draw();}
   delay(230);
  }
  delay(15);
