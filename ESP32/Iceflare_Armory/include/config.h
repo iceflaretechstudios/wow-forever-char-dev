@@ -4,16 +4,15 @@
 #define WIFI_PASSWORD "YOUR_WIFI_PASSWORD"
 #define WORKER_BASE "https://iceflaredashboard.lanceshipley42.workers.dev"
 #define PREFERRED_CHARACTER "Theundying"
-// First-pass calibration from five portrait-orientation touch samples.
-// Raw X decreases left-to-right; raw Y decreases top-to-bottom.
-// Corners show skew; fine-tune after checking on-screen buttons.
+// Nine-point affine calibration, portrait rotation 0, 320x480.
+// Calibrator RMS 2.39 px; max calibration-target error 3.45 px.
+// Coefficients map raw XPT2046 values directly to screen pixels.
 #define TOUCH_CS 33
 #define TOUCH_IRQ 36
-#define TOUCH_MIN_X 604
-#define TOUCH_MAX_X 3597
-#define TOUCH_MIN_Y 796
-#define TOUCH_MAX_Y 3287
-#define TOUCH_SWAP_XY false
-#define TOUCH_INVERT_X true
-#define TOUCH_INVERT_Y true
+#define TOUCH_AFFINE_AX0 337.0592350311f
+#define TOUCH_AFFINE_AX1 -0.0865459735f
+#define TOUCH_AFFINE_AX2 0.0007963339f
+#define TOUCH_AFFINE_AY0 508.5161895860f
+#define TOUCH_AFFINE_AY1 0.0008178298f
+#define TOUCH_AFFINE_AY2 -0.1299426473f
 #define REFRESH_INTERVAL_MS 300000UL
