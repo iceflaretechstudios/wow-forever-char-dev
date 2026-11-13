@@ -5,19 +5,19 @@
     "characterClass": "Paladin",
     "faction": "Horde",
     "guild": "Dominion Forever",
-    "averageItemLevel": 12
+    "averageItemLevel": 13
   },
   "stats": {
-    "health": 656,
+    "health": 706,
     "mana": 620,
     "strength": 75,
     "attackPower": 193,
-    "armor": 858
+    "armor": 1336
   },
   "weapon": [
     {
-      "name": "Birchwood Maul of the Boar",
-      "dps": 9.999999
+      "name": "Thick War Axe",
+      "dps": 8.6
     }
   ],
   "professions": [
@@ -47,6 +47,6 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-13T04:38:53.232Z",
-  "snapshotFetchedAt": "2026-11-13T04:38:53.244437+00:00"
+  "updated": "2026-11-13T05:41:15.587Z",
+  "snapshotFetchedAt": "2026-11-13T05:41:15.614100+00:00"
 }
