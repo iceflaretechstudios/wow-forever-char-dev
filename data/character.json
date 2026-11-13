@@ -1,18 +1,18 @@
 {
   "character": {
     "name": "Iceflare Theundying",
-    "level": 19,
+    "level": 21,
     "characterClass": "Paladin",
     "faction": "Horde",
     "guild": "Dominion Forever",
-    "averageItemLevel": 11
+    "averageItemLevel": 12
   },
   "stats": {
-    "health": 527,
-    "mana": 545,
-    "strength": 61,
-    "attackPower": 159,
-    "armor": 714
+    "health": 656,
+    "mana": 620,
+    "strength": 75,
+    "attackPower": 193,
+    "armor": 858
   },
   "weapon": [
     {
@@ -23,12 +23,12 @@
   "professions": [
     {
       "name": "Skinning",
-      "skill": 136,
+      "skill": 150,
       "max": 150
     },
     {
       "name": "Herbalism",
-      "skill": 69,
+      "skill": 71,
       "max": 75
     },
     {
@@ -47,6 +47,6 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-13T01:55:10.563Z",
-  "snapshotFetchedAt": "2026-11-13T01:55:10.582006+00:00"
+  "updated": "2026-11-13T02:43:18.976Z",
+  "snapshotFetchedAt": "2026-11-13T02:43:18.996879+00:00"
 }
