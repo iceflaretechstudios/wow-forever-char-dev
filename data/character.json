@@ -8,11 +8,11 @@
     "averageItemLevel": 13
   },
   "stats": {
-    "health": 706,
+    "health": 746,
     "mana": 620,
     "strength": 75,
     "attackPower": 193,
-    "armor": 1336
+    "armor": 1368
   },
   "weapon": [
     {
@@ -22,14 +22,14 @@
   ],
   "professions": [
     {
-      "name": "Skinning",
-      "skill": 150,
-      "max": 150
+      "name": "Leatherworking",
+      "skill": 23,
+      "max": 75
     },
     {
-      "name": "Herbalism",
-      "skill": 71,
-      "max": 75
+      "name": "Skinning",
+      "skill": 151,
+      "max": 225
     },
     {
       "name": "Cooking",
@@ -47,6 +47,6 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-13T08:59:41.164Z",
-  "snapshotFetchedAt": "2026-11-13T08:59:41.171665+00:00"
+  "updated": "2026-11-13T09:58:54.965Z",
+  "snapshotFetchedAt": "2026-11-13T09:58:54.984457+00:00"
 }
