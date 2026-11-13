@@ -5,14 +5,14 @@
     "characterClass": "Paladin",
     "faction": "Horde",
     "guild": "Dominion Forever",
-    "averageItemLevel": 13
+    "averageItemLevel": 16
   },
   "stats": {
-    "health": 746,
+    "health": 796,
     "mana": 620,
-    "strength": 75,
-    "attackPower": 193,
-    "armor": 1368
+    "strength": 82,
+    "attackPower": 207,
+    "armor": 1505
   },
   "weapon": [
     {
@@ -23,8 +23,8 @@
   "professions": [
     {
       "name": "Leatherworking",
-      "skill": 23,
-      "max": 75
+      "skill": 126,
+      "max": 150
     },
     {
       "name": "Skinning",
@@ -47,6 +47,6 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-13T11:55:06.823Z",
-  "snapshotFetchedAt": "2026-11-13T11:55:06.834412+00:00"
+  "updated": "2026-11-13T12:57:20.941Z",
+  "snapshotFetchedAt": "2026-11-13T12:57:20.955776+00:00"
 }
