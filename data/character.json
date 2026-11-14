@@ -1,34 +1,34 @@
 {
   "character": {
     "name": "Iceflare Theundying",
-    "level": 21,
+    "level": 22,
     "characterClass": "Paladin",
     "faction": "Horde",
     "guild": "Dominion Forever",
-    "averageItemLevel": 16
+    "averageItemLevel": 18
   },
   "stats": {
-    "health": 796,
-    "mana": 620,
-    "strength": 82,
-    "attackPower": 207,
-    "armor": 1505
+    "health": 882,
+    "mana": 659,
+    "strength": 87,
+    "attackPower": 232,
+    "armor": 1612
   },
   "weapon": [
     {
-      "name": "Thick War Axe",
-      "dps": 8.6
+      "name": "Butcher's Slicer",
+      "dps": 14.999999
     }
   ],
   "professions": [
     {
       "name": "Leatherworking",
-      "skill": 126,
+      "skill": 131,
       "max": 150
     },
     {
       "name": "Skinning",
-      "skill": 151,
+      "skill": 159,
       "max": 225
     },
     {
@@ -47,6 +47,6 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-14T09:59:32.683Z",
-  "snapshotFetchedAt": "2026-11-14T09:59:32.701387+00:00"
+  "updated": "2026-11-14T10:42:53.960Z",
+  "snapshotFetchedAt": "2026-11-14T10:42:53.974528+00:00"
 }
