@@ -5,7 +5,7 @@
     "characterClass": "Paladin",
     "faction": "Horde",
     "guild": "Dominion Forever",
-    "averageItemLevel": 18
+    "averageItemLevel": 17
   },
   "stats": {
     "health": 882,
@@ -28,7 +28,7 @@
     },
     {
       "name": "Skinning",
-      "skill": 159,
+      "skill": 161,
       "max": 225
     },
     {
@@ -47,6 +47,14 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-15T04:14:10.484Z",
-  "snapshotFetchedAt": "2026-11-15T04:14:11.499758+00:00"
+  "updated": "2026-11-15T05:08:11.461Z",
+  "money": {
+    "gold": 0,
+    "silver": 35,
+    "copper": 74,
+    "totalCopper": 3574,
+    "goldLastSynced": "2026-11-15 05:01:07"
+  },
+  "moneySyncedAt": "2026-11-15 05:01:07",
+  "snapshotFetchedAt": "2026-11-15T05:08:12.178626+00:00"
 }
