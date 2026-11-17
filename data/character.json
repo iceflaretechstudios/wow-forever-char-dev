@@ -47,14 +47,14 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-17T03:16:36.572Z",
+  "updated": "2026-11-17T04:18:37.789Z",
   "money": {
     "gold": 0,
-    "silver": 35,
-    "copper": 74,
-    "totalCopper": 3574,
-    "goldLastSynced": "2026-11-15 05:01:07"
+    "silver": 90,
+    "copper": 55,
+    "totalCopper": 9055,
+    "goldLastSynced": "2026-11-17 04:17:38"
   },
-  "moneySyncedAt": "2026-11-15 05:01:07",
-  "snapshotFetchedAt": "2026-11-17T03:16:38.464928+00:00"
+  "moneySyncedAt": "2026-11-17 04:17:38",
+  "snapshotFetchedAt": "2026-11-17T04:18:38.254897+00:00"
 }
