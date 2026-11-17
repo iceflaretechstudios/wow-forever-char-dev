@@ -1,18 +1,18 @@
 {
   "character": {
     "name": "Iceflare Theundying",
-    "level": 22,
+    "level": 23,
     "characterClass": "Paladin",
     "faction": "Horde",
     "guild": "Dominion Forever",
     "averageItemLevel": 17
   },
   "stats": {
-    "health": 882,
-    "mana": 659,
-    "strength": 87,
-    "attackPower": 232,
-    "armor": 1612
+    "health": 909,
+    "mana": 699,
+    "strength": 88,
+    "attackPower": 237,
+    "armor": 1645
   },
   "weapon": [
     {
@@ -47,7 +47,7 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-17T02:23:18.332Z",
+  "updated": "2026-11-17T03:16:36.572Z",
   "money": {
     "gold": 0,
     "silver": 35,
@@ -56,5 +56,5 @@
     "goldLastSynced": "2026-11-15 05:01:07"
   },
   "moneySyncedAt": "2026-11-15 05:01:07",
-  "snapshotFetchedAt": "2026-11-17T02:23:19.098449+00:00"
+  "snapshotFetchedAt": "2026-11-17T03:16:38.464928+00:00"
 }
