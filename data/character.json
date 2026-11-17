@@ -8,22 +8,22 @@
     "averageItemLevel": 17
   },
   "stats": {
-    "health": 909,
+    "health": 849,
     "mana": 699,
-    "strength": 88,
-    "attackPower": 237,
-    "armor": 1645
+    "strength": 83,
+    "attackPower": 221,
+    "armor": 1049
   },
   "weapon": [
     {
-      "name": "Butcher's Slicer",
-      "dps": 14.999999
+      "name": "Fishing Pole",
+      "dps": 0.99999994
     }
   ],
   "professions": [
     {
       "name": "Leatherworking",
-      "skill": 131,
+      "skill": 133,
       "max": 150
     },
     {
@@ -39,7 +39,7 @@
     {
       "name": "Fishing",
       "skill": 150,
-      "max": 150
+      "max": 225
     },
     {
       "name": "First Aid",
@@ -47,14 +47,14 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-17T05:23:10.159Z",
+  "updated": "2026-11-17T06:27:54.036Z",
   "money": {
     "gold": 0,
-    "silver": 90,
-    "copper": 55,
-    "totalCopper": 9055,
-    "goldLastSynced": "2026-11-17 04:17:38"
+    "silver": 82,
+    "copper": 41,
+    "totalCopper": 8241,
+    "goldLastSynced": "2026-11-17 06:18:44"
   },
-  "moneySyncedAt": "2026-11-17 04:17:38",
-  "snapshotFetchedAt": "2026-11-17T05:23:11.238365+00:00"
+  "moneySyncedAt": "2026-11-17 06:18:44",
+  "snapshotFetchedAt": "2026-11-17T06:27:54.532585+00:00"
 }
