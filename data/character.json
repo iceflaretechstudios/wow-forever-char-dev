@@ -47,6 +47,14 @@
       "max": 75
     }
   ],
-  "updated": "2026-11-25T18:18:38.691Z",
-  "snapshotFetchedAt": "2026-11-25T18:19:03.775788+00:00"
+  "updated": "2026-11-25T19:23:39.408Z",
+  "money": {
+    "gold": 0,
+    "silver": 82,
+    "copper": 41,
+    "totalCopper": 8241,
+    "goldLastSynced": "2026-11-17 06:18:44"
+  },
+  "moneySyncedAt": "2026-11-17 06:18:44",
+  "snapshotFetchedAt": "2026-11-25T19:23:40.412717+00:00"
 }
